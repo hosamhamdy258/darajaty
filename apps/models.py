@@ -13,8 +13,8 @@ class Questions(models.Model):
     def __str__(self) -> str:
         return self.question
 
-    class Meta:
-        ordering = ["id"]
+    # class Meta:
+    #     ordering = ["id"]
 
 
 class Choices(models.Model):
@@ -26,8 +26,8 @@ class Choices(models.Model):
     def __str__(self) -> str:
         return self.choice
 
-    class Meta:
-        ordering = ["id"]
+    # class Meta:
+    #     ordering = ["id"]
 
 
 class Answers(models.Model):
@@ -43,8 +43,8 @@ class Answers(models.Model):
     def __str__(self) -> str:
         return f"{self.question} + {self.choice}"
 
-    class Meta:
-        ordering = ["id"]
+    # class Meta:
+    #     ordering = ["id"]
 
 
 class UserQuestions(models.Model):
@@ -65,7 +65,7 @@ class UserQuestions(models.Model):
             )
         ]
 
-        ordering = ["id"]
+        # ordering = ["id"]
 
 
 class UserAnswers(models.Model):
@@ -84,8 +84,8 @@ class UserAnswers(models.Model):
     timeout = models.BooleanField(editable=False, default=False)
 
     #  transaction
-    class Meta:
-        ordering = ["id"]
+    # class Meta:
+    #     ordering = ["id"]
 
 
 # TODO use signals to preserve user data or remove delete account

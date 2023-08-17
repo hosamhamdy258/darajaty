@@ -20,29 +20,30 @@ class Today_Question_view(ListAPIView):
 
     def get_queryset(self):
         # * question choice logic
-        questions_list = Questions.objects.exclude(
+        self.questions_list = Questions.objects.exclude(
             questions_list__user=self.request.user
         )[:1]
-        if questions_list.count() == 0:
-            raise ParseError(detail="No Available Questions Today Try Again Tomorrow")
-        return questions_list
+        if len(self.questions_list) == 0:
+            raise ParseError(detail="No Available Questions Try Again Later")
+        return self.questions_list
 
     def list(self, request, *args, **kwargs):
-        questionsToday = UserQuestions.objects.filter(
-            user=request.user, time__gte=datetime.now().date()
-        )
-        # TODO add parameter for changing max allowed questions per day
-
-        if questionsToday.exists():
-            raise ParseError(detail="Reached Max Allowed Questions Per Day")
-
+        self.question_counter(request)
         response = super().list(request, *args, **kwargs)
         UserQuestions.objects.create(
-            questions=self.get_queryset().first(), user=self.request.user
+            questions=self.questions_list[0], user=self.request.user
         )
         response.data = response.data[0] if len(response.data) == 1 else response.data
 
         return response
+
+    def question_counter(self, request):
+        questionsToday = UserQuestions.objects.filter(
+            user=request.user, time__gte=datetime.now().date()
+        ).count()
+        # TODO add dynamic field with for changing max allowed questions per day
+        if questionsToday >= 2:
+            raise ParseError(detail="Reached Max Allowed Questions Per Day")
 
 
 class Today_Answer_view(CreateAPIView):
