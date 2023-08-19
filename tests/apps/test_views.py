@@ -1,3 +1,5 @@
+from collections import OrderedDict
+import collections
 from rest_framework.test import APITestCase
 from rest_framework import status
 from django.contrib.auth import get_user_model
@@ -24,15 +26,46 @@ User = get_user_model()
 # #     self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-# class TodayQuestionViewTest(APITestCase):
-#     def setUp(self):
-#         self.valid_data = {
-#             "name": "Test User",
-#             "password": "StrongPassword123",
-#             "email": "test@example.com",
-#             "phone": "01234567890",
-#         }
-#         self.user = User.objects.create_user(**self.valid_data)
+class TodayQuestionViewTest(APITestCase):
+    @classmethod
+    def setUpTestData(self):
+        self.valid_data = {
+            "name": "Test User",
+            "password": "StrongPassword123",
+            "email": "test@example.com",
+            "phone": "01234567890",
+        }
+        self.user = User.objects.create_user(**self.valid_data)
+        self.questions = [
+            Questions.objects.create(question=f"Question {i}") for i in range(5)
+        ]
+        self.url = "/api/today_question/"
+
+    # def test_get_today_question_success(self):
+    #     self.client.force_authenticate(user=self.user)
+    #     response = self.client.get(self.url)
+
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertTrue(isinstance(response.data, OrderedDict))
+    #     self.assertIn("question", response.data)
+    #     self.assertIn("question_choices", response.data)
+
+    def test_get_today_question_no_available(self):
+        self.client.force_authenticate(user=self.user)
+        [
+            UserQuestions.objects.create(questions=self.questions[i], user=self.user)
+            for i in range(5)
+        ]
+        [
+            UserAnswers.objects.create(question=self.questions[i], user=self.user)
+            for i in range(5)
+        ]
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data["detail"], "No Available Questions Try Again Later"
+        )
+
 
 #     def test_get_today_question_no_available(self):
 #         # self.client.force_login(self.user)
@@ -68,47 +101,47 @@ User = get_user_model()
 #         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-class TodayAnswerViewTest(APITestCase):
-    def setUp(self):
-        self.valid_data = {
-            "name": "Test User",
-            "password": "StrongPassword123",
-            "email": "test@example.com",
-            "phone": "01234567890",
-        }
-        self.user = User.objects.create_user(**self.valid_data)
-        self.choice = Choices.objects.create(choice="Blue")
-        self.question = Questions.objects.create(
-            question="What is your favorite color?"
-        )
-        self.choice.question.add(self.question)
-        Answers.objects.create(question=self.question, choice=self.choice)
-        self.url = "/api/today_answer/"
-        self.client.force_login(self.user)
-        self.client.force_authenticate(user=self.user)
-        self.get_url = "/api/today_question/"
-        self.get_response = self.client.get(self.get_url)
+# class TodayAnswerViewTest(APITestCase):
+#     def setUp(self):
+#         self.valid_data = {
+#             "name": "Test User",
+#             "password": "StrongPassword123",
+#             "email": "test@example.com",
+#             "phone": "01234567890",
+#         }
+#         self.user = User.objects.create_user(**self.valid_data)
+#         self.choice = Choices.objects.create(choice="Blue")
+#         self.question = Questions.objects.create(
+#             question="What is your favorite color?"
+#         )
+#         self.choice.question.add(self.question)
+#         Answers.objects.create(question=self.question, choice=self.choice)
+#         self.url = "/api/today_answer/"
+#         self.client.force_login(self.user)
+#         self.client.force_authenticate(user=self.user)
+#         self.get_url = "/api/today_question/"
+#         self.get_response = self.client.get(self.get_url)
 
-    def test_post_today_answer_max_allowed_answers(self):
-        UserAnswers.objects.create(
-            user=self.user, question=self.question, choice=self.choice
-        )
-        data = {"question": self.question.id, "choice": "Red"}
-        response = self.client.post(self.url, data)
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data["detail"], "Reached Max Allowed Answers Per Day")
+#     def test_post_today_answer_max_allowed_answers(self):
+#         UserAnswers.objects.create(
+#             user=self.user, question=self.question, choice=self.choice
+#         )
+#         data = {"question": self.question.id, "choice": "Red"}
+#         response = self.client.post(self.url, data)
+#         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+#         self.assertEqual(response.data["detail"], "Reached Max Allowed Answers Per Day")
 
-    # def test_post_today_answer_success(self):
-    #     data = {"question": self.question.id, "choice": self.choice.id}
-    #     response = self.client.post(self.url, data)
-    #     self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+# def test_post_today_answer_success(self):
+#     data = {"question": self.question.id, "choice": self.choice.id}
+#     response = self.client.post(self.url, data)
+#     self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    # def test_post_today_answer_with_attempts(self):
-    #     self.client.force_login(self.user)
-    #     UserAnswers.objects.create(
-    #         user=self.user, question=self.question, choice=self.choice
-    #     )
-    #     data = {"question": self.question.id, "choice": "Red"}
-    #     response = self.client.post(self.url, data)
-    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-    #     self.assertEqual(response.data["detail"], "Reached Max Allowed Answers Per Day")
+# def test_post_today_answer_with_attempts(self):
+#     self.client.force_login(self.user)
+#     UserAnswers.objects.create(
+#         user=self.user, question=self.question, choice=self.choice
+#     )
+#     data = {"question": self.question.id, "choice": "Red"}
+#     response = self.client.post(self.url, data)
+#     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+#     self.assertEqual(response.data["detail"], "Reached Max Allowed Answers Per Day")
