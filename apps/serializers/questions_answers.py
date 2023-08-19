@@ -38,13 +38,7 @@ class User_Answers_serializers(FlexFieldsModelSerializer):
         user = self.context["request"].user
         question = self.check_question_answer_flow(validated_data, user)
 
-        try:
-            obj = UserAnswers.objects.get(
-                question=validated_data["question"], user=user
-            )
-            print(obj)
-        except ObjectDoesNotExist:
-            ParseError(detail="Already Answered this question")
+        self.is_answered_before(validated_data, user)
 
         if datetime.now() - question.time > timedelta(seconds=40):
             validated_data.update(timeout=True)
@@ -67,6 +61,13 @@ class User_Answers_serializers(FlexFieldsModelSerializer):
             user.wallet.deposit(5)
 
         return instance
+
+    def is_answered_before(self, validated_data, user):
+        query = UserAnswers.objects.filter(
+            question=validated_data["question"], user=user
+        ).exists()
+        if query:
+            raise ParseError(detail="Already Answered this question")
 
     def check_question_answer_flow(self, validated_data, user):
         try:
@@ -101,8 +102,3 @@ class Questions_serializers(FlexFieldsModelSerializer):
         model = Questions
         fields = ("id", "question", "question_choices")
         # expandable_fields = {"choices": ("Choices_serializers", {"many": True})}
-
-    # def to_representation(self, instance):
-    #     rep = super().to_representation(instance)
-    #     print(rep)
-    #     return rep

@@ -10,8 +10,8 @@ class ExtraFeatures:
     """
     Apply this mixin to any view or viewSet to add multiple features
     - control serializer class meta fields by override fields/omit = list or tuple
-    - use expand to force expand on serializer class
-    notice serializer class must support expand from rest_flex_fields import FlexFieldsModelSerializer
+    - use expand to force expand on serializer class inherited
+    from rest_flex_fields import FlexFieldsModelSerializer
     - use read_only = list or tuple to force readonly field on serializer class
     """
 

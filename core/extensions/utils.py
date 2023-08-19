@@ -20,20 +20,32 @@ from rest_framework import exceptions, serializers
 from rest_framework.pagination import PageNumberPagination
 
 
-def duplicated_value_checker(iterable, key):
+def duplicated_value_checker(iterable, key, value=None):
     """
-    1-Counter is dict generated from looping on original array of dicts
-        with given dict["key"]=value
-    2-using .items() on result from Counter to loop (name=key,count=value)
-    3- return list with key counted more than 1
+    check value is duplicated in array of dicts with optional specified value
+
+    example : [{"color": "red"},{"color": "red"}]
+
+    will raise "error": "red is duplicated"
+
+    1- Counter generated from looping on original array of dicts
+        with given dict["key"]=optional[value]
+
+    2- Using .items() on result from Counter to loop (name=key,count=value)
+
+    3- Return list with key counted more than 1
     """
-    value = [
+    values = [
         name
-        for name, count in Counter(element[key] for element in iterable).items()
+        for name, count in Counter(
+            element[key]
+            for element in iterable
+            if element[key] == value or value is None
+        ).items()
         if count > 1
     ]
-    if value:
-        raise serializers.ValidationError({"error": f"value in {value} is duplicated "})
+    if values:
+        raise serializers.ValidationError({"error": f"{values} is duplicated"})
 
 
 class UnlimitedSetPagination(PageNumberPagination):
@@ -165,7 +177,6 @@ class BaseModel(models.Model):
 
     class Meta:
         abstract = True
-        ordering = ["-id"]
 
     def state_update(self, state=None):
         if state:
@@ -191,8 +202,7 @@ class CustomFlexFieldsModelSerializer(CountryFieldMixin, FlexFieldsModelSerializ
         try:
             valid = self.context.get("request", [])
             if valid and not isinstance(valid.user, AnonymousUser):
-                # TODO remove inserted manually created_by << old note
-                # TODO use is_authenticated from is better https://docs.djangoproject.com/en/4.2/ref/contrib/auth/
+                # TODO use is_authenticated from is better https://docs.djangoproject.com/en/4.2/ref/contrib/auth/ # noqa
                 # kwargs.update(created_by=self.context["request"].user)
                 pass
         except Exception as e:

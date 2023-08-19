@@ -3,9 +3,17 @@ from django.contrib import admin
 from .models import Answers, Choices, Questions, UserAnswers, UserQuestions
 
 
+class ChoicesInline(admin.TabularInline):
+    model = Choices.question.through
+    extra = 0
+
+
 @admin.register(Questions)
 class QuestionsAdmin(admin.ModelAdmin):
     list_display = ("id", "question")
+    inlines = [
+        ChoicesInline,
+    ]
 
 
 @admin.register(Choices)

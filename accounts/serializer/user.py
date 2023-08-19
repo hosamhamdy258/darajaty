@@ -12,7 +12,7 @@ from hashid_field.rest import HashidSerializerCharField
 from rest_framework import serializers
 
 from accounts.models import User
-from core.utils import CustomFlexFieldsModelSerializer
+from core.extensions.utils import CustomFlexFieldsModelSerializer
 
 
 class CustomUserCreateSerializer(CustomFlexFieldsModelSerializer, UserCreateSerializer):
