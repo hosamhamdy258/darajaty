@@ -48,6 +48,24 @@ def duplicated_value_checker(iterable, key, value=None):
         raise serializers.ValidationError({"error": f"{values} is duplicated"})
 
 
+def check_value_exists(iterable, key, error_msg="", raise_error=True):
+    """
+    checks if key not found in iterable of dicts
+
+    optional raise error with custom message or bool
+    """
+    found = any([element.get(key) for element in iterable])
+    if not found and raise_error:
+        raise exceptions.ParseError(
+            {
+                "error": f"{key} not exist in given Iterable"
+                if not error_msg
+                else error_msg
+            }
+        )
+    return found
+
+
 class UnlimitedSetPagination(PageNumberPagination):
     page_size = 9999
     page_size_query_param = "page_size"

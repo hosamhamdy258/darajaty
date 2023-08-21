@@ -5,7 +5,10 @@ from rest_framework import serializers
 
 
 from apps.models import Answers, Choices, Questions
-from core.extensions.utils import duplicated_value_checker
+from core.extensions.utils import (
+    check_value_exists,
+    duplicated_value_checker,
+)
 
 
 class Choices_create_serializers(FlexFieldsModelSerializer):
@@ -38,6 +41,11 @@ class Questions_create_serializers(FlexFieldsModelSerializer):
     def create(self, validated_data):
         choices = validated_data.pop("question_choices")
         duplicated_value_checker(iterable=choices, key="correct", value=True)
+        check_value_exists(
+            iterable=choices,
+            key="correct",
+            error_msg="one of choices must has correct:true",
+        )
         question_instance = super().create(validated_data)
         for choice in choices:
             correct = choice.pop("correct")

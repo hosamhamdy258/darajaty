@@ -47,6 +47,7 @@ class Today_Question_view(ListAPIView):
 
         response.data = response.data[0] if len(response.data) == 1 else response.data
         UserQuestions.objects.create(questions=self.questions_list[0], user=user)
+        # TODO check randomness of order of choices list
         return response
 
     def verify_last_question(self, user):
