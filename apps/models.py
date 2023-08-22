@@ -3,9 +3,14 @@ from django.db.models.constraints import UniqueConstraint
 from hashid_field import HashidAutoField
 
 
+# TODO make db migration files
 class Questions(models.Model):
     id = HashidAutoField(primary_key=True)
-    question = models.CharField(max_length=250)
+    question = models.CharField(
+        max_length=250,
+        unique=True,
+        error_messages={"unique": "This question already exists."},
+    )
 
     def __str__(self) -> str:
         return self.question

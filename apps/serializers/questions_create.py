@@ -46,10 +46,11 @@ class Questions_create_serializers(FlexFieldsModelSerializer):
             key="correct",
             error_msg="one of choices must has correct:true",
         )
+        # TODO question must has 2 choices at least
         question_instance = super().create(validated_data)
         for choice in choices:
             correct = choice.pop("correct")
-            choice_instance = Choices.objects.create(**choice)
+            choice_instance, _ = Choices.objects.get_or_create(**choice)
             choice_instance.question.add(question_instance)
             if correct:
                 Answers.objects.create(
