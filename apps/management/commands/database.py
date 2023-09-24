@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 from apps.models import Questions, Choices, Answers
+from apps.management.commands.colors import colors_json
 
 
 class Command(BaseCommand):
@@ -7,7 +8,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         try:
-            colors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"]
+            colors = [color for color in colors_json.keys()]
             if len(colors) < 2:
                 raise CommandError("List must has at least 2 elements")
             for index, color in enumerate(colors):

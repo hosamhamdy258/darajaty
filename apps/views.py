@@ -37,7 +37,7 @@ class Today_Question_view(ListAPIView):
         object_counter(
             user=user,
             model=UserQuestions,
-            times=22,
+            times=100,
             msg="Reached Max Allowed Questions Per Day",
         )
 
@@ -57,9 +57,11 @@ class Today_Question_view(ListAPIView):
                 UserAnswers.objects.get(question=last_question.questions, user=user)
             except ObjectDoesNotExist:
                 if datetime.now() - last_question.time > timedelta(seconds=30):
+                    # TODO Equalize UserAnswers with UserQuestions to ensure consistency data on transactions table
                     UserAnswers.objects.create(
                         question=last_question.questions, user=user
                     )
+
                 else:
                     raise ParseError(
                         detail="Answer last Question before request new question"
@@ -76,13 +78,11 @@ class Today_Answer_view(CreateAPIView):
         object_counter(
             user=user,
             model=UserAnswers,
-            times=22,
+            times=100,
             msg="Reached Max Allowed Answers Per Day",
         )
 
-        response = super().post(request, *args, **kwargs)
-
-        return response
+        return super().post(request, *args, **kwargs)
 
 
 # class Choices_view(models.Model):
