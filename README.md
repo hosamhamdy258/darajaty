@@ -10,6 +10,10 @@ TODO: Add a brief description of the project here.
 
 Stay tuned! The live version of Darajaty will be available soon.
 
+### Front-end repo
+
+[Link](https://github.com/hosamhamdy258/darajaty-frontend)
+
 ### Features
 
 - **Add Questions:** Contribute to the quiz bank by adding your own questions.
