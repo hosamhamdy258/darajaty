@@ -1,0 +1,17 @@
+
+Django
+django-cleanup
+django-cors-headers
+django-extensions
+django-filter
+django-hashid-field
+django-rest-knox
+djangorestframework
+djoser
+drf-flex-fields
+drf-spectacular
+gunicorn
+kolo
+Pillow
+python-dotenv
+wheel

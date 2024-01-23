@@ -11,7 +11,7 @@ from django.core.files import File
 from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
-from django_countries.serializers import CountryFieldMixin
+# from django_countries.serializers import CountryFieldMixin
 from hashid_field import HashidAutoField, HashidField
 from hashid_field.rest import HashidSerializerCharField
 from PIL import Image
@@ -202,7 +202,8 @@ class BaseModel(models.Model):
             self.save()
 
 
-class CustomFlexFieldsModelSerializer(CountryFieldMixin, FlexFieldsModelSerializer):
+# class CustomFlexFieldsModelSerializer(CountryFieldMixin, FlexFieldsModelSerializer):
+class CustomFlexFieldsModelSerializer(FlexFieldsModelSerializer):
     id = HashidSerializerCharField(source_field=HashidField(), read_only=True)
     created_by = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
