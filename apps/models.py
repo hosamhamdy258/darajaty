@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models.constraints import UniqueConstraint
 from hashid_field import HashidAutoField
 
+# TODO rename all fk to be more usable
 
 # TODO make db migration files
 class Questions(models.Model):

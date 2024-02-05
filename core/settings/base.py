@@ -141,6 +141,8 @@ TIME_ZONE = "Africa/Cairo"
 
 USE_I18N = True
 
+# TODO add translation for msgs and app
+
 # USE_TZ = True
 
 

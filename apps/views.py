@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import random
 from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework.exceptions import ParseError
@@ -30,6 +31,9 @@ class Today_Question_view(ListAPIView):
         )[:1]
         if len(self.questions_list) == 0:
             raise ParseError(detail="No Available Questions Try Again Later")
+        
+        # TODO check for last question is answered if not return it again to continue timer on frontend
+        
         return self.questions_list
 
     def list(self, request, *args, **kwargs):
@@ -46,8 +50,10 @@ class Today_Question_view(ListAPIView):
         response = super().list(request, *args, **kwargs)
 
         response.data = response.data[0] if len(response.data) == 1 else response.data
+        random.shuffle(response.data["question_choices"])
+        
         UserQuestions.objects.create(questions=self.questions_list[0], user=user)
-        # TODO check randomness of order of choices list
+        
         return response
 
     def verify_last_question(self, user):
