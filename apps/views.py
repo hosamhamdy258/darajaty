@@ -4,6 +4,8 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework.exceptions import ParseError
 from rest_framework.generics import CreateAPIView, ListAPIView
+from rest_framework.response import Response
+
 
 from apps.models import Questions, UserAnswers, UserQuestions
 from apps.serializers.questions_create import Questions_create_serializers
@@ -31,9 +33,9 @@ class Today_Question_view(ListAPIView):
         )[:1]
         if len(self.questions_list) == 0:
             raise ParseError(detail="No Available Questions Try Again Later")
-        
+
         # TODO check for last question is answered if not return it again to continue timer on frontend
-        
+
         return self.questions_list
 
     def list(self, request, *args, **kwargs):
@@ -45,15 +47,23 @@ class Today_Question_view(ListAPIView):
             msg="Reached Max Allowed Questions Per Day",
         )
 
-        self.verify_last_question(user)
+        last_question = self.verify_last_question(user)
+        if last_question:
+            serializer = self.get_serializer(last_question.questions)
+            random.shuffle(serializer.data["question_choices"])
+            # TODO make time as constant in django setting and replace them in code
+            time = last_question.time + timedelta(seconds=30) - datetime.now()
+            response.data["time"] = time.total_seconds().__ceil__()
+            return Response(serializer.data)
 
         response = super().list(request, *args, **kwargs)
 
         response.data = response.data[0] if len(response.data) == 1 else response.data
         random.shuffle(response.data["question_choices"])
-        
+
         UserQuestions.objects.create(questions=self.questions_list[0], user=user)
-        
+        response.data["time"] = 30
+
         return response
 
     def verify_last_question(self, user):
@@ -69,9 +79,7 @@ class Today_Question_view(ListAPIView):
                     )
 
                 else:
-                    raise ParseError(
-                        detail="Answer last Question before request new question"
-                    )
+                    return last_question
 
 
 class Today_Answer_view(CreateAPIView):
