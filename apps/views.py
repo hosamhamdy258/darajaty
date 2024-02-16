@@ -58,7 +58,7 @@ class Today_Question_view(ListAPIView):
             random.shuffle(response.data["choices_set"])
             time = (
                 last_question.time
-                + timedelta(seconds=answer_tolerance)
+                + timedelta(seconds=timeout)
                 - timezone.now()
             )
             response.data["time"] = time.total_seconds().__ceil__()
