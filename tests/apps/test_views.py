@@ -1,9 +1,11 @@
-from collections import OrderedDict
 import collections
-from rest_framework.test import APITestCase
-from rest_framework import status
+from collections import OrderedDict
+
 from django.contrib.auth import get_user_model
-from apps.models import Answers, Questions, UserAnswers, UserQuestions, Choices
+from rest_framework import status
+from rest_framework.test import APITestCase
+
+from apps.models import Answers, Choices, Questions, UserAnswers, UserQuestions
 from core.settings.base import REST_FRAMEWORK
 
 User = get_user_model()
@@ -48,7 +50,7 @@ class TodayQuestionViewTest(APITestCase):
     #     self.assertEqual(response.status_code, 200)
     #     self.assertTrue(isinstance(response.data, OrderedDict))
     #     self.assertIn("question", response.data)
-    #     self.assertIn("question_choices", response.data)
+    #     self.assertIn("choices_set", response.data)
 
     def test_get_today_question_no_available(self):
         self.client.force_authenticate(user=self.user)

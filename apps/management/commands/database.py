@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
-from apps.models import Questions, Choices, Answers
+
 from apps.management.commands.colors import colors_json
+from apps.models import Answers, Choices, Questions
 
 
 class Command(BaseCommand):

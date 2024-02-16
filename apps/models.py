@@ -4,6 +4,7 @@ from hashid_field import HashidAutoField
 
 # TODO rename all fk to be more usable
 
+
 # TODO make db migration files
 class Questions(models.Model):
     id = HashidAutoField(primary_key=True)
@@ -20,7 +21,7 @@ class Questions(models.Model):
 class Choices(models.Model):
     id = HashidAutoField(primary_key=True)
     choice = models.CharField(max_length=250)
-    question = models.ManyToManyField("apps.Questions", related_name="question_choices")
+    question = models.ManyToManyField("apps.Questions")
     # TODO constrain of max 3-4 choices for question
 
     def __str__(self) -> str:

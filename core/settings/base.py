@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+
 # flake8:noqa
 
 import os
@@ -239,3 +240,5 @@ REST_KNOX = {
     "TOKEN_TTL": timedelta(hours=48),
     # "TOKEN_LIMIT_PER_USER": 2,
 }
+
+ANSWER_TIMEOUT = 30

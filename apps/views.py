@@ -1,20 +1,23 @@
-from datetime import datetime, timedelta
 import random
-from django.core.exceptions import ObjectDoesNotExist
+from datetime import datetime, timedelta
 
+from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
+from django.utils import timezone
 from rest_framework.exceptions import ParseError
 from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.response import Response
 
-
 from apps.models import Questions, UserAnswers, UserQuestions
-from apps.serializers.questions_create import Questions_create_serializers
 from apps.serializers.questions_answers import (
     Questions_serializers,
     User_Answers_serializers,
 )
+from apps.serializers.questions_create import Questions_create_serializers
 
 # Create your views here.
+
+timeout = settings.ANSWER_TIMEOUT
 
 
 class Questions_view(CreateAPIView):
@@ -50,19 +53,19 @@ class Today_Question_view(ListAPIView):
         last_question = self.verify_last_question(user)
         if last_question:
             serializer = self.get_serializer(last_question.questions)
-            random.shuffle(serializer.data["question_choices"])
-            # TODO make time as constant in django setting and replace them in code
-            time = last_question.time + timedelta(seconds=30) - datetime.now()
+            response = Response(serializer.data)
+            random.shuffle(response.data["choices_set"])
+            time = last_question.time + timedelta(seconds=timeout) - timezone.now()
             response.data["time"] = time.total_seconds().__ceil__()
-            return Response(serializer.data)
+            return response
 
         response = super().list(request, *args, **kwargs)
 
         response.data = response.data[0] if len(response.data) == 1 else response.data
-        random.shuffle(response.data["question_choices"])
+        random.shuffle(response.data["choices_set"])
 
         UserQuestions.objects.create(questions=self.questions_list[0], user=user)
-        response.data["time"] = 30
+        response.data["time"] = timeout
 
         return response
 
@@ -72,7 +75,7 @@ class Today_Question_view(ListAPIView):
             try:
                 UserAnswers.objects.get(question=last_question.questions, user=user)
             except ObjectDoesNotExist:
-                if datetime.now() - last_question.time > timedelta(seconds=30):
+                if timezone.now() - last_question.time > timedelta(seconds=timeout):
                     # TODO Equalize UserAnswers with UserQuestions to ensure consistency data on transactions table
                     UserAnswers.objects.create(
                         question=last_question.questions, user=user

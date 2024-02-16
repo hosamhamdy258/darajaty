@@ -64,9 +64,9 @@
 #         choice1 = Choices.objects.create(choice="Choice 1")
 #         choice2 = Choices.objects.create(choice="Choice 2")
 #         choice3 = Choices.objects.create(choice="Choice 3")
-#         question.question_choices.add(choice1, choice2, choice3)
+#         question.choices_set.add(choice1, choice2, choice3)
 
-#         self.assertEqual(question.question_choices.count(), 3)
+#         self.assertEqual(question.choices_set.count(), 3)
 
 #     def test_answers_constraint(self):
 #         question = Questions.objects.create(question="Sample question")

@@ -11,6 +11,7 @@ from django.core.files import File
 from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
+
 # from django_countries.serializers import CountryFieldMixin
 from hashid_field import HashidAutoField, HashidField
 from hashid_field.rest import HashidSerializerCharField
@@ -58,9 +59,9 @@ def check_value_exists(iterable, key, error_msg="", raise_error=True):
     if not found and raise_error:
         raise exceptions.ParseError(
             {
-                "error": f"{key} not exist in given Iterable"
-                if not error_msg
-                else error_msg
+                "error": (
+                    f"{key} not exist in given Iterable" if not error_msg else error_msg
+                )
             }
         )
     return found

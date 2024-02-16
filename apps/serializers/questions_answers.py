@@ -1,5 +1,8 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
+from django.utils import timezone
 
+
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from hashid_field import HashidField
 from hashid_field.rest import HashidSerializerCharField
@@ -8,6 +11,8 @@ from rest_framework import serializers
 from rest_framework.exceptions import ParseError
 
 from apps.models import Answers, Choices, Questions, UserAnswers, UserQuestions
+
+timeout = settings.ANSWER_TIMEOUT
 
 
 class User_Answers_serializers(FlexFieldsModelSerializer):
@@ -40,7 +45,7 @@ class User_Answers_serializers(FlexFieldsModelSerializer):
 
         self.is_answered_before(validated_data, user)
 
-        if datetime.now() - question.time > timedelta(seconds=40):
+        if timezone.now() - question.time > timedelta(seconds=timeout):
             validated_data.update(timeout=True)
 
         # * check answer is correct
@@ -96,9 +101,9 @@ class Choices_serializers(FlexFieldsModelSerializer):
 
 class Questions_serializers(FlexFieldsModelSerializer):
     id = HashidSerializerCharField(source_field=HashidField(), read_only=True)
-    question_choices = Choices_serializers(many=True)
+    choices_set = Choices_serializers(many=True)
 
     class Meta:
         model = Questions
-        fields = ("id", "question", "question_choices")
+        fields = ("id", "question", "choices_set")
         # expandable_fields = {"choices": ("Choices_serializers", {"many": True})}

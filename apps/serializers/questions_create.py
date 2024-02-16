@@ -3,12 +3,8 @@ from hashid_field.rest import HashidSerializerCharField
 from rest_flex_fields import FlexFieldsModelSerializer
 from rest_framework import serializers
 
-
 from apps.models import Answers, Choices, Questions
-from core.extensions.utils import (
-    check_value_exists,
-    duplicated_value_checker,
-)
+from core.extensions.utils import check_value_exists, duplicated_value_checker
 
 
 class Choices_create_serializers(FlexFieldsModelSerializer):
@@ -31,15 +27,15 @@ class Answer_create_serializers(FlexFieldsModelSerializer):
 
 class Questions_create_serializers(FlexFieldsModelSerializer):
     id = HashidSerializerCharField(source_field=HashidField(), read_only=True)
-    question_choices = Choices_create_serializers(many=True)
+    choices_set = Choices_create_serializers(many=True)
     answer_question = Answer_create_serializers(read_only=True)
 
     class Meta:
         model = Questions
-        fields = ("id", "question", "question_choices", "answer_question")
+        fields = ("id", "question", "choices_set", "answer_question")
 
     def create(self, validated_data):
-        choices = validated_data.pop("question_choices")
+        choices = validated_data.pop("choices_set")
         duplicated_value_checker(iterable=choices, key="correct", value=True)
         check_value_exists(
             iterable=choices,
