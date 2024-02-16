@@ -18,6 +18,7 @@ from apps.serializers.questions_create import Questions_create_serializers
 # Create your views here.
 
 timeout = settings.ANSWER_TIMEOUT
+answer_tolerance = settings.TOLERANCE_TIME
 
 
 class Questions_view(CreateAPIView):
@@ -55,7 +56,11 @@ class Today_Question_view(ListAPIView):
             serializer = self.get_serializer(last_question.questions)
             response = Response(serializer.data)
             random.shuffle(response.data["choices_set"])
-            time = last_question.time + timedelta(seconds=timeout) - timezone.now()
+            time = (
+                last_question.time
+                + timedelta(seconds=answer_tolerance)
+                - timezone.now()
+            )
             response.data["time"] = time.total_seconds().__ceil__()
             return response
 

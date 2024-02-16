@@ -1,9 +1,8 @@
 from datetime import timedelta
-from django.utils import timezone
-
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils import timezone
 from hashid_field import HashidField
 from hashid_field.rest import HashidSerializerCharField
 from rest_flex_fields import FlexFieldsModelSerializer
@@ -12,7 +11,7 @@ from rest_framework.exceptions import ParseError
 
 from apps.models import Answers, Choices, Questions, UserAnswers, UserQuestions
 
-timeout = settings.ANSWER_TIMEOUT
+answer_tolerance = settings.TOLERANCE_TIME
 
 
 class User_Answers_serializers(FlexFieldsModelSerializer):
@@ -45,7 +44,7 @@ class User_Answers_serializers(FlexFieldsModelSerializer):
 
         self.is_answered_before(validated_data, user)
 
-        if timezone.now() - question.time > timedelta(seconds=timeout):
+        if timezone.now() - question.time > timedelta(seconds=answer_tolerance):
             validated_data.update(timeout=True)
 
         # * check answer is correct
