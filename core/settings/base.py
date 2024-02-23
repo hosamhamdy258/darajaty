@@ -142,9 +142,9 @@ TIME_ZONE = "Africa/Cairo"
 
 USE_I18N = True
 
-# TODO add translation for msgs and app
+USE_TZ = False
 
-# USE_TZ = True
+# TODO add translation for msgs and app
 
 
 # Static files (CSS, JavaScript, Images)

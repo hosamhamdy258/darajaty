@@ -56,11 +56,7 @@ class Today_Question_view(ListAPIView):
             serializer = self.get_serializer(last_question.questions)
             response = Response(serializer.data)
             random.shuffle(response.data["choices_set"])
-            time = (
-                last_question.time
-                + timedelta(seconds=timeout)
-                - timezone.now()
-            )
+            time = last_question.time + timedelta(seconds=timeout) - datetime.now()
             response.data["time"] = time.total_seconds().__ceil__()
             return response
 
@@ -80,7 +76,7 @@ class Today_Question_view(ListAPIView):
             try:
                 UserAnswers.objects.get(question=last_question.questions, user=user)
             except ObjectDoesNotExist:
-                if timezone.now() - last_question.time > timedelta(seconds=timeout):
+                if datetime.now() - last_question.time > timedelta(seconds=timeout):
                     # TODO Equalize UserAnswers with UserQuestions to ensure consistency data on transactions table
                     UserAnswers.objects.create(
                         question=last_question.questions, user=user

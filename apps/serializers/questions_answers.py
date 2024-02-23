@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
@@ -44,7 +44,7 @@ class User_Answers_serializers(FlexFieldsModelSerializer):
 
         self.is_answered_before(validated_data, user)
 
-        if timezone.now() - question.time > timedelta(seconds=answer_tolerance):
+        if datetime.now() - question.time > timedelta(seconds=answer_tolerance):
             validated_data.update(timeout=True)
 
         # * check answer is correct

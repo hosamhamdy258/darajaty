@@ -1,5 +1,8 @@
+from datetime import datetime
+
 from django.db import models
 from django.db.models.constraints import UniqueConstraint
+from django.utils import timezone
 from hashid_field import HashidAutoField
 
 # TODO rename all fk to be more usable
@@ -50,7 +53,7 @@ class UserQuestions(models.Model):
     questions = models.ForeignKey(
         "apps.Questions", related_name="questions_list", on_delete=models.CASCADE
     )
-    time = models.DateTimeField(editable=False, auto_now_add=True)
+    time = models.DateTimeField(editable=False, default=datetime.now)
 
     class Meta:
         constraints = [
@@ -76,7 +79,7 @@ class UserAnswers(models.Model):
         null=True,
     )
     correct = models.BooleanField(editable=False, default=False)
-    time = models.DateTimeField(editable=False, auto_now_add=True)
+    time = models.DateTimeField(editable=False, default=datetime.now)
     timeout = models.BooleanField(editable=False, default=False)
 
     #  TODO transaction signal
