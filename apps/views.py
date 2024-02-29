@@ -32,7 +32,7 @@ class Today_Question_view(ListAPIView):
 
     def get_queryset(self):
         # * question choice logic
-        self.questions_list = Questions.objects.exclude(questions_list__user=self.request.user)[:1]
+        self.questions_list = Questions.objects.exclude(userquestions__user=self.request.user)[:1]
         if len(self.questions_list) == 0:
             raise ParseError(detail="No Available Questions Try Again Later")
 
