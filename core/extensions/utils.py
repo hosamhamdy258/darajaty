@@ -36,13 +36,7 @@ def duplicated_value_checker(iterable, key, value=None):
 
     3- Return list with key counted more than 1
     """
-    values = [
-        name
-        for name, count in Counter(
-            element[key] for element in iterable if element[key] == value or value is None
-        ).items()
-        if count > 1
-    ]
+    values = [name for name, count in Counter(element[key] for element in iterable if element[key] == value or value is None).items() if count > 1]
     if values:
         raise serializers.ValidationError({"error": f"{values} is duplicated"})
 
@@ -195,9 +189,7 @@ class CustomFlexFieldsModelSerializer(FlexFieldsModelSerializer):
         # dynamic change read_only fields from view
         read_only = self.context.get("read_only", ())
         self.Meta.read_only_fields = (
-            read_only
-            if not hasattr(self.Meta, "read_only_fields")
-            else tuple(itertools.chain(self.Meta.read_only_fields, read_only))
+            read_only if not hasattr(self.Meta, "read_only_fields") else tuple(itertools.chain(self.Meta.read_only_fields, read_only))
         )
 
     def save(self, **kwargs):

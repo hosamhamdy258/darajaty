@@ -19,4 +19,3 @@ services:
       - ../darajaty-frontend/.:/app
     container_name: react
     image: react:v1.0
-    
