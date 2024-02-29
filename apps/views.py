@@ -32,9 +32,7 @@ class Today_Question_view(ListAPIView):
 
     def get_queryset(self):
         # * question choice logic
-        self.questions_list = Questions.objects.exclude(
-            questions_list__user=self.request.user
-        )[:1]
+        self.questions_list = Questions.objects.exclude(questions_list__user=self.request.user)[:1]
         if len(self.questions_list) == 0:
             raise ParseError(detail="No Available Questions Try Again Later")
 
@@ -44,12 +42,7 @@ class Today_Question_view(ListAPIView):
 
     def list(self, request, *args, **kwargs):
         user = request.user
-        object_counter(
-            user=user,
-            model=UserQuestions,
-            times=100,
-            msg="Reached Max Allowed Questions Per Day",
-        )
+        object_counter(user=user, model=UserQuestions, times=100, msg="Reached Max Allowed Questions Per Day")
 
         last_question = self.verify_last_question(user)
         if last_question:
@@ -78,9 +71,7 @@ class Today_Question_view(ListAPIView):
             except ObjectDoesNotExist:
                 if datetime.now() - last_question.time > timedelta(seconds=timeout):
                     # TODO Equalize UserAnswers with UserQuestions to ensure consistency data on transactions table
-                    UserAnswers.objects.create(
-                        question=last_question.questions, user=user
-                    )
+                    UserAnswers.objects.create(question=last_question.questions, user=user)
 
                 else:
                     return last_question
@@ -93,12 +84,7 @@ class Today_Answer_view(CreateAPIView):
     # TODO check requested Question is submitted answer
     def post(self, request, *args, **kwargs):
         user = request.user
-        object_counter(
-            user=user,
-            model=UserAnswers,
-            times=100,
-            msg="Reached Max Allowed Answers Per Day",
-        )
+        object_counter(user=user, model=UserAnswers, times=100, msg="Reached Max Allowed Answers Per Day")
 
         return super().post(request, *args, **kwargs)
 
@@ -109,9 +95,7 @@ class Today_Answer_view(CreateAPIView):
 
 
 def object_counter(user, model, times, msg):
-    counted_objects = model.objects.filter(
-        user=user, time__gte=datetime.now().date()
-    ).count()
+    counted_objects = model.objects.filter(user=user, time__gte=datetime.now().date()).count()
     # TODO add dynamic field with for changing max allowed times per day
     if counted_objects >= times:
         raise ParseError(detail=msg)

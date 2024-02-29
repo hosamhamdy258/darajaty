@@ -17,9 +17,7 @@ class MyUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, name, phone, password):
-        user = self.create_user(
-            email=self.normalize_email(email), name=name, phone=phone, password=password
-        )
+        user = self.create_user(email=self.normalize_email(email), name=name, phone=phone, password=password)
         user.set_password(password)
         user.is_admin = True
         user.is_active = True
@@ -44,9 +42,7 @@ class User(AbstractBaseUser):
     is_admin = models.BooleanField(default=False)
 
     class Meta:
-        constraints = [
-            CheckConstraint(check=Q(phone__regex=regex), name="phone_number")
-        ]
+        constraints = [CheckConstraint(check=Q(phone__regex=regex), name="phone_number")]
 
     objects = MyUserManager()
 

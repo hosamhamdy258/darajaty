@@ -49,8 +49,6 @@ class Questions_create_serializers(FlexFieldsModelSerializer):
             choice_instance, _ = Choices.objects.get_or_create(**choice)
             choice_instance.question.add(question_instance)
             if correct:
-                Answers.objects.create(
-                    question=question_instance, choice=choice_instance
-                )
+                Answers.objects.create(question=question_instance, choice=choice_instance)
 
         return question_instance

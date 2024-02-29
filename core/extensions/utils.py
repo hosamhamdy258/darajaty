@@ -39,9 +39,7 @@ def duplicated_value_checker(iterable, key, value=None):
     values = [
         name
         for name, count in Counter(
-            element[key]
-            for element in iterable
-            if element[key] == value or value is None
+            element[key] for element in iterable if element[key] == value or value is None
         ).items()
         if count > 1
     ]
@@ -57,13 +55,7 @@ def check_value_exists(iterable, key, error_msg="", raise_error=True):
     """
     found = any([element.get(key) for element in iterable])
     if not found and raise_error:
-        raise exceptions.ParseError(
-            {
-                "error": (
-                    f"{key} not exist in given Iterable" if not error_msg else error_msg
-                )
-            }
-        )
+        raise exceptions.ParseError({"error": (f"{key} not exist in given Iterable" if not error_msg else error_msg)})
     return found
 
 
@@ -85,9 +77,7 @@ def unique_slug_generator(instance, new_slug=None):
     klass = instance.__class__
     qs_exists = klass.objects.filter(slug=slug).exists()
     if qs_exists:
-        new_slug = "{slug}-{randomString}".format(
-            slug=slug, randomString=random_string_generator(size=4)
-        )
+        new_slug = "{slug}-{randomString}".format(slug=slug, randomString=random_string_generator(size=4))
 
         return unique_slug_generator(instance, new_slug=new_slug)
     return slug
@@ -100,9 +90,7 @@ def slug_generator(sender, instance, *args, **kwargs):
     #     raise serializers.ValidationError({"error": "Slug can't be integers only"})
     if instance.slug.isnumeric():
         num_slug = instance.slug
-        new_slug = "{slug}-{randomString}".format(
-            slug=num_slug, randomString=random_string_generator(size=4)
-        )
+        new_slug = "{slug}-{randomString}".format(slug=num_slug, randomString=random_string_generator(size=4))
         instance.slug = new_slug
 
 
@@ -172,12 +160,8 @@ class BaseModel(models.Model):
         blank=True,
         editable=False,
     )
-    created = models.DateTimeField(
-        _("created"), editable=False, auto_now_add=True, blank=True
-    )
-    modified = models.DateTimeField(
-        _("modified"), editable=False, auto_now=True, blank=True
-    )
+    created = models.DateTimeField(_("created"), editable=False, auto_now_add=True, blank=True)
+    modified = models.DateTimeField(_("modified"), editable=False, auto_now=True, blank=True)
 
     INACTIVE_STATUS = 0
     ACTIVE_STATUS = 1
@@ -186,9 +170,7 @@ class BaseModel(models.Model):
         (INACTIVE_STATUS, _("Inactive")),
         (ACTIVE_STATUS, _("Active")),
     )
-    status = models.IntegerField(
-        _("status"), choices=STATUS_CHOICES, default=ACTIVE_STATUS
-    )
+    status = models.IntegerField(_("status"), choices=STATUS_CHOICES, default=ACTIVE_STATUS)
     state = models.CharField(max_length=20, choices=STATE_CHOICES, default="pending")
 
     objects = models.Manager()

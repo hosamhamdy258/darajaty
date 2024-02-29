@@ -5,9 +5,7 @@ from django.db import models
 
 from .errors import InsufficientBalance
 
-CURRENCY_STORE_FIELD = getattr(
-    settings, "WALLET_CURRENCY_STORE_FIELD", models.BigIntegerField
-)
+CURRENCY_STORE_FIELD = getattr(settings, "WALLET_CURRENCY_STORE_FIELD", models.BigIntegerField)
 
 
 # TODO force validation (can't deposit negative number same for withdraw )

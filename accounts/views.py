@@ -26,16 +26,12 @@ class CustomTokenCreateView(LoginView, TokenCreateView):
     permission_classes = [AllowAny]
 
     def post(self, request, format=None):
-        serializer = self.serializer_class(
-            data=request.data, context={"request": request}
-        )
+        serializer = self.serializer_class(data=request.data, context={"request": request})
         if serializer.is_valid(raise_exception=True):
             user = serializer.validated_data["user"]
             login(request, user)
             response = super().post(request, format=None)
         else:
-            return Response(
-                {"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response(response.data, status=status.HTTP_200_OK)

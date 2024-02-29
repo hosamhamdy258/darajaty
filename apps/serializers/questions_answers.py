@@ -49,9 +49,7 @@ class User_Answers_serializers(FlexFieldsModelSerializer):
 
         # * check answer is correct
         try:
-            Answers.objects.get(
-                question=validated_data["question"], choice=validated_data["choice"]
-            )
+            Answers.objects.get(question=validated_data["question"], choice=validated_data["choice"])
             validated_data.update(correct=True)
         except ObjectDoesNotExist:
             pass
@@ -67,17 +65,13 @@ class User_Answers_serializers(FlexFieldsModelSerializer):
         return instance
 
     def is_answered_before(self, validated_data, user):
-        query = UserAnswers.objects.filter(
-            question=validated_data["question"], user=user
-        ).exists()
+        query = UserAnswers.objects.filter(question=validated_data["question"], user=user).exists()
         if query:
             raise ParseError(detail="Already Answered this question")
 
     def check_question_answer_flow(self, validated_data, user):
         try:
-            return UserQuestions.objects.get(
-                user=user, questions=validated_data["question"]
-            )
+            return UserQuestions.objects.get(user=user, questions=validated_data["question"])
         except ObjectDoesNotExist:
             raise ParseError(detail="Must Request Question before attempting to answer")
 

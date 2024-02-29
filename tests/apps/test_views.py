@@ -38,9 +38,7 @@ class TodayQuestionViewTest(APITestCase):
             "phone": "01234567890",
         }
         self.user = User.objects.create_user(**self.valid_data)
-        self.questions = [
-            Questions.objects.create(question=f"Question {i}") for i in range(5)
-        ]
+        self.questions = [Questions.objects.create(question=f"Question {i}") for i in range(5)]
         self.url = "/api/today_question/"
 
     # def test_get_today_question_success(self):
@@ -54,19 +52,11 @@ class TodayQuestionViewTest(APITestCase):
 
     def test_get_today_question_no_available(self):
         self.client.force_authenticate(user=self.user)
-        [
-            UserQuestions.objects.create(questions=self.questions[i], user=self.user)
-            for i in range(5)
-        ]
-        [
-            UserAnswers.objects.create(question=self.questions[i], user=self.user)
-            for i in range(5)
-        ]
+        [UserQuestions.objects.create(questions=self.questions[i], user=self.user) for i in range(5)]
+        [UserAnswers.objects.create(question=self.questions[i], user=self.user) for i in range(5)]
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(
-            response.data["detail"], "No Available Questions Try Again Later"
-        )
+        self.assertEqual(response.data["detail"], "No Available Questions Try Again Later")
 
 
 #     def test_get_today_question_no_available(self):

@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "djoser",
     "django_extensions",
+    # "django_watchfiles",
     # Apps
     "apps",
     "accounts",
@@ -230,9 +231,7 @@ CORS_ALLOW_HEADERS = [
 ]
 
 
-HASHID_FIELD_SALT = os.environ.get(
-    "HASHID_FIELD_SALT", default="RANDOM_HASHID_FIELD_SALT"
-)
+HASHID_FIELD_SALT = os.environ.get("HASHID_FIELD_SALT", default="RANDOM_HASHID_FIELD_SALT")
 
 
 REST_KNOX = {

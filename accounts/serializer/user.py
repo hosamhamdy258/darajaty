@@ -28,9 +28,7 @@ class CustomUserCreateSerializer(CustomFlexFieldsModelSerializer, UserCreateSeri
             validate_password(password)
         except django_exceptions.ValidationError as e:
             serializer_error = serializers.as_serializer_error(e)
-            raise serializers.ValidationError(
-                {"password": serializer_error["non_field_errors"]}
-            )
+            raise serializers.ValidationError({"password": serializer_error["non_field_errors"]})
 
         return attrs
 
@@ -64,9 +62,7 @@ class CustomTokenCreateSerializer(TokenCreateSerializer):
     def validate(self, attrs):
         password = attrs.get("password")
         params = {settings.LOGIN_FIELD: attrs.get(settings.LOGIN_FIELD)}
-        self.user = authenticate(
-            request=self.context.get("request"), **params, password=password
-        )
+        self.user = authenticate(request=self.context.get("request"), **params, password=password)
         if not self.user:
             self.user = User.objects.filter(**params).first()
             if self.user and not self.user.check_password(password):

@@ -30,13 +30,9 @@ class ExtraFeatures:
         def err(key):
             raise ValidationError({"error": f"{key} must be list or tuple"})
 
-        fields = (
-            self.fields if isinstance(self.fields, (list, tuple)) else err("fields")
-        )
+        fields = self.fields if isinstance(self.fields, (list, tuple)) else err("fields")
         omit = self.omit if isinstance(self.omit, (list, tuple)) else err("omit")
-        expand = (
-            self.expand if isinstance(self.expand, (list, tuple)) else err("expand")
-        )
+        expand = self.expand if isinstance(self.expand, (list, tuple)) else err("expand")
         return [fields, omit, expand]
 
 
@@ -67,15 +63,11 @@ class CreateModelMixin:
 
     def create(self, request, *args, **kwargs):
         fields, omit, expand = self.extra_fields()
-        serializer = self.get_serializer(
-            data=request.data, fields=fields, omit=omit, expand=expand
-        )
+        serializer = self.get_serializer(data=request.data, fields=fields, omit=omit, expand=expand)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        return Response(
-            serializer.data, status=status.HTTP_201_CREATED, headers=headers
-        )
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def perform_create(self, serializer):
         serializer.save()
@@ -98,14 +90,10 @@ class ListModelMixin:
 
         page = self.paginate_queryset(queryset)
         if page is not None:
-            serializer = self.get_serializer(
-                page, many=True, fields=fields, omit=omit, expand=expand
-            )
+            serializer = self.get_serializer(page, many=True, fields=fields, omit=omit, expand=expand)
             return self.get_paginated_response(serializer.data)
 
-        serializer = self.get_serializer(
-            queryset, many=True, fields=fields, omit=omit, expand=expand
-        )
+        serializer = self.get_serializer(queryset, many=True, fields=fields, omit=omit, expand=expand)
         return Response(serializer.data)
 
 
@@ -117,9 +105,7 @@ class RetrieveModelMixin:
     def retrieve(self, request, *args, **kwargs):
         fields, omit, expand = self.extra_fields()
         instance = self.get_object()
-        serializer = self.get_serializer(
-            instance, fields=fields, omit=omit, expand=expand
-        )
+        serializer = self.get_serializer(instance, fields=fields, omit=omit, expand=expand)
         return Response(serializer.data)
 
 
@@ -172,9 +158,7 @@ class DestroyModelMixin:
         instance.delete()
 
 
-class CreateAPIView(
-    MultipleFieldLookupMixin, ExtraFeatures, CreateModelMixin, GenericAPIView
-):
+class CreateAPIView(MultipleFieldLookupMixin, ExtraFeatures, CreateModelMixin, GenericAPIView):
     """
     Concrete view for creating a model instance.
     """
@@ -183,9 +167,7 @@ class CreateAPIView(
         return self.create(request, *args, **kwargs)
 
 
-class ListAPIView(
-    MultipleFieldLookupMixin, ExtraFeatures, ListModelMixin, GenericAPIView
-):
+class ListAPIView(MultipleFieldLookupMixin, ExtraFeatures, ListModelMixin, GenericAPIView):
     """
     Concrete view for listing a queryset.
     """
@@ -194,9 +176,7 @@ class ListAPIView(
         return self.list(request, *args, **kwargs)
 
 
-class RetrieveAPIView(
-    MultipleFieldLookupMixin, ExtraFeatures, RetrieveModelMixin, GenericAPIView
-):
+class RetrieveAPIView(MultipleFieldLookupMixin, ExtraFeatures, RetrieveModelMixin, GenericAPIView):
     """
     Concrete view for retrieving a model instance.
     """
@@ -205,9 +185,7 @@ class RetrieveAPIView(
         return self.retrieve(request, *args, **kwargs)
 
 
-class DestroyAPIView(
-    MultipleFieldLookupMixin, ExtraFeatures, DestroyModelMixin, GenericAPIView
-):
+class DestroyAPIView(MultipleFieldLookupMixin, ExtraFeatures, DestroyModelMixin, GenericAPIView):
     """
     Concrete view for deleting a model instance.
     """
@@ -216,9 +194,7 @@ class DestroyAPIView(
         return self.destroy(request, *args, **kwargs)
 
 
-class UpdateAPIView(
-    MultipleFieldLookupMixin, ExtraFeatures, UpdateModelMixin, GenericAPIView
-):
+class UpdateAPIView(MultipleFieldLookupMixin, ExtraFeatures, UpdateModelMixin, GenericAPIView):
     """
     Concrete view for updating a model instance.
     """
