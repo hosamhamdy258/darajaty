@@ -20,7 +20,7 @@ class Questions(models.Model):
 class Choices(models.Model):
     id = HashidAutoField(primary_key=True)
     choice = models.CharField(max_length=250)
-    question = models.ManyToManyField("apps.Questions")
+    fk_question = models.ManyToManyField("apps.Questions")
     # TODO constrain of max 3-4 choices for question
 
     def __str__(self) -> str:
@@ -29,24 +29,24 @@ class Choices(models.Model):
 
 class Answers(models.Model):
     id = HashidAutoField(primary_key=True)
-    question = models.OneToOneField("apps.Questions", on_delete=models.CASCADE)
-    choice = models.ForeignKey("apps.Choices", on_delete=models.CASCADE)  # correct choice
+    fk_question = models.OneToOneField("apps.Questions", on_delete=models.CASCADE)
+    fk_choice = models.ForeignKey("apps.Choices", on_delete=models.CASCADE)  # correct choice
 
     # TODO constrains question has 1 choice for answer
     def __str__(self) -> str:
-        return f"{self.question} + {self.choice}"
+        return f"{self.fk_question} + {self.fk_choice}"
 
 
 class UserQuestions(models.Model):
     id = HashidAutoField(primary_key=True)
-    user = models.ForeignKey("accounts.User", on_delete=models.CASCADE)
-    questions = models.ForeignKey("apps.Questions", on_delete=models.CASCADE)
+    fk_user = models.ForeignKey("accounts.User", on_delete=models.CASCADE)
+    fk_question = models.ForeignKey("apps.Questions", on_delete=models.CASCADE)
     time = models.DateTimeField(editable=False, default=datetime.now)
 
     class Meta:
         constraints = [
             UniqueConstraint(
-                fields=["user", "questions"],
+                fields=["fk_user", "fk_question"],
                 name="unique_user_question",
             )
         ]
@@ -54,9 +54,9 @@ class UserQuestions(models.Model):
 
 class UserAnswers(models.Model):
     id = HashidAutoField(primary_key=True)
-    user = models.ForeignKey("accounts.User", on_delete=models.CASCADE)
-    question = models.ForeignKey("apps.Questions", on_delete=models.CASCADE)
-    choice = models.ForeignKey("apps.Choices", on_delete=models.CASCADE, null=True)
+    fk_user = models.ForeignKey("accounts.User", on_delete=models.CASCADE)
+    fk_question = models.ForeignKey("apps.Questions", on_delete=models.CASCADE)
+    fk_choice = models.ForeignKey("apps.Choices", on_delete=models.CASCADE, null=True)
     correct = models.BooleanField(editable=False, default=False)
     time = models.DateTimeField(editable=False, default=datetime.now)
     timeout = models.BooleanField(editable=False, default=False)

@@ -18,11 +18,11 @@ class Choices_create_serializers(FlexFieldsModelSerializer):
 
 class Answer_create_serializers(FlexFieldsModelSerializer):
     id = HashidSerializerCharField(source_field=HashidField(), read_only=True)
-    choice = Choices_create_serializers()
+    fk_choice = Choices_create_serializers()
 
     class Meta:
         model = Answers
-        fields = ["id", "choice"]
+        fields = ["id", "fk_choice"]
 
 
 class Questions_create_serializers(FlexFieldsModelSerializer):
@@ -47,8 +47,8 @@ class Questions_create_serializers(FlexFieldsModelSerializer):
         for choice in choices:
             correct = choice.pop("correct")
             choice_instance, _ = Choices.objects.get_or_create(**choice)
-            choice_instance.question.add(question_instance)
+            choice_instance.fk_question.add(question_instance)
             if correct:
-                Answers.objects.create(question=question_instance, choice=choice_instance)
+                Answers.objects.create(fk_question=question_instance, fk_choice=choice_instance)
 
         return question_instance

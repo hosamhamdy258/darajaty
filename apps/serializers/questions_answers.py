@@ -22,12 +22,12 @@ class User_Answers_serializers(FlexFieldsModelSerializer):
     #     required=False,
     #     write_only=True,
     # )
-    choice = serializers.PrimaryKeyRelatedField(
+    fk_choice = serializers.PrimaryKeyRelatedField(
         queryset=Choices.objects.all(),
         pk_field=HashidSerializerCharField(source_field=HashidField()),
         write_only=True,
     )
-    question = serializers.PrimaryKeyRelatedField(
+    fk_question = serializers.PrimaryKeyRelatedField(
         queryset=Questions.objects.all(),
         pk_field=HashidSerializerCharField(source_field=HashidField()),
         write_only=True,
@@ -35,7 +35,7 @@ class User_Answers_serializers(FlexFieldsModelSerializer):
 
     class Meta:
         model = UserAnswers
-        fields = ("choice", "question", "correct", "timeout")
+        fields = ("fk_choice", "fk_question", "correct", "timeout")
         read_only_fields = ("correct", "timeout")
 
     def create(self, validated_data):
@@ -49,12 +49,12 @@ class User_Answers_serializers(FlexFieldsModelSerializer):
 
         # * check answer is correct
         try:
-            Answers.objects.get(question=validated_data["question"], choice=validated_data["choice"])
+            Answers.objects.get(fk_question=validated_data["fk_question"], fk_choice=validated_data["fk_choice"])
             validated_data.update(correct=True)
         except ObjectDoesNotExist:
             pass
 
-        validated_data.update(user=user)
+        validated_data.update(fk_user=user)
         instance = super().create(validated_data)
         if instance.timeout:
             raise ParseError(detail="Time Ran out to answer")
@@ -65,13 +65,13 @@ class User_Answers_serializers(FlexFieldsModelSerializer):
         return instance
 
     def is_answered_before(self, validated_data, user):
-        query = UserAnswers.objects.filter(question=validated_data["question"], user=user).exists()
+        query = UserAnswers.objects.filter(fk_question=validated_data["fk_question"], fk_user=user).exists()
         if query:
             raise ParseError(detail="Already Answered this question")
 
     def check_question_answer_flow(self, validated_data, user):
         try:
-            return UserQuestions.objects.get(user=user, questions=validated_data["question"])
+            return UserQuestions.objects.get(fk_user=user, fk_question=validated_data["fk_question"])
         except ObjectDoesNotExist:
             raise ParseError(detail="Must Request Question before attempting to answer")
 
@@ -81,7 +81,7 @@ class Answers_serializers(FlexFieldsModelSerializer):
 
     class Meta:
         model = Answers
-        fields = ("id", "answer", "question")
+        fields = ("id", "fk_answer", "fk_question")
 
 
 class Choices_serializers(FlexFieldsModelSerializer):

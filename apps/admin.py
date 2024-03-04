@@ -4,7 +4,7 @@ from .models import Answers, Choices, Questions, UserAnswers, UserQuestions
 
 
 class ChoicesInline(admin.TabularInline):
-    model = Choices.question.through
+    model = Choices.fk_question.through
     extra = 0
 
 
@@ -19,24 +19,24 @@ class QuestionsAdmin(admin.ModelAdmin):
 @admin.register(Choices)
 class ChoicesAdmin(admin.ModelAdmin):
     list_display = ("id", "choice")
-    list_filter = ("question",)
+    list_filter = ("fk_question",)
 
 
 @admin.register(Answers)
 class AnswersAdmin(admin.ModelAdmin):
-    list_display = ("id", "question", "choice")
-    list_filter = ("question", "choice")
+    list_display = ("id", "fk_question", "fk_choice")
+    list_filter = ("fk_question", "fk_choice")
 
 
 @admin.register(UserQuestions)
 class UserQuestionsAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "questions", "time")
-    list_filter = ("user", "questions", "time")
+    list_display = ("id", "fk_user", "fk_question", "time")
+    list_filter = ("fk_user", "fk_question", "time")
     readonly_fields = ("time",)
 
 
 @admin.register(UserAnswers)
 class UserAnswersAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "question", "choice", "time", "correct", "timeout")
-    list_filter = ("user", "question", "choice", "time")
+    list_display = ("id", "fk_user", "fk_question", "fk_choice", "time", "correct", "timeout")
+    list_filter = ("fk_user", "fk_question", "fk_choice", "time")
     readonly_fields = ("correct", "time", "timeout")

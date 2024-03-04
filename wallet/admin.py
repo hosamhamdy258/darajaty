@@ -5,8 +5,8 @@ from .models import Transaction, Wallet
 
 @admin.register(Wallet)
 class WalletAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "current_balance", "created_at")
-    list_filter = ("user", "created_at")
+    list_display = ("id", "fk_user", "current_balance", "created_at")
+    list_filter = ("fk_user", "created_at")
     date_hierarchy = "created_at"
 
 

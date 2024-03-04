@@ -32,7 +32,7 @@ class Today_Question_view(ListAPIView):
 
     def get_queryset(self):
         # * question choice logic
-        self.questions_list = Questions.objects.exclude(userquestions__user=self.request.user)[:1]
+        self.questions_list = Questions.objects.exclude(userquestions__fk_user=self.request.user)[:1]
         if len(self.questions_list) == 0:
             raise ParseError(detail="No Available Questions Try Again Later")
 
@@ -46,7 +46,7 @@ class Today_Question_view(ListAPIView):
 
         last_question = self.verify_last_question(user)
         if last_question:
-            serializer = self.get_serializer(last_question.questions)
+            serializer = self.get_serializer(last_question.fk_question)
             response = Response(serializer.data)
             random.shuffle(response.data["choices_set"])
             time = last_question.time + timedelta(seconds=timeout) - datetime.now()
@@ -58,20 +58,20 @@ class Today_Question_view(ListAPIView):
         response.data = response.data[0] if len(response.data) == 1 else response.data
         random.shuffle(response.data["choices_set"])
 
-        UserQuestions.objects.create(questions=self.questions_list[0], user=user)
+        UserQuestions.objects.create(fk_question=self.questions_list[0], fk_user=user)
         response.data["time"] = timeout
 
         return response
 
     def verify_last_question(self, user):
-        last_question = UserQuestions.objects.filter(user=user).last()
+        last_question = UserQuestions.objects.filter(fk_user=user).last()
         if last_question:
             try:
-                UserAnswers.objects.get(question=last_question.questions, user=user)
+                UserAnswers.objects.get(fk_question=last_question.fk_question, fk_user=user)
             except ObjectDoesNotExist:
                 if datetime.now() - last_question.time > timedelta(seconds=timeout):
                     # TODO Equalize UserAnswers with UserQuestions to ensure consistency data on transactions table
-                    UserAnswers.objects.create(question=last_question.questions, user=user)
+                    UserAnswers.objects.create(fk_question=last_question.fk_question, fk_user=user)
 
                 else:
                     return last_question
@@ -95,7 +95,7 @@ class Today_Answer_view(CreateAPIView):
 
 
 def object_counter(user, model, times, msg):
-    counted_objects = model.objects.filter(user=user, time__gte=datetime.now().date()).count()
+    counted_objects = model.objects.filter(fk_user=user, time__gte=datetime.now().date()).count()
     # TODO add dynamic field with for changing max allowed times per day
     if counted_objects >= times:
         raise ParseError(detail=msg)

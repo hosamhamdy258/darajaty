@@ -10,7 +10,7 @@ CURRENCY_STORE_FIELD = getattr(settings, "WALLET_CURRENCY_STORE_FIELD", models.B
 
 # TODO force validation (can't deposit negative number same for withdraw )
 class Wallet(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    fk_user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     current_balance = CURRENCY_STORE_FIELD(default=0)
 

@@ -17,8 +17,8 @@ class Command(BaseCommand):
                 choices = [color, colors[index - 1], colors[index - 2]]
                 for choice in choices:
                     instance, _ = Choices.objects.get_or_create(choice=choice)
-                    instance.question.add(question)
-                answer, _ = Answers.objects.get_or_create(choice=Choices.objects.get(choice=color), question=question)
+                    instance.fk_question.add(question)
+                answer, _ = Answers.objects.get_or_create(fk_choice=Choices.objects.get(choice=color), fk_question=question)
         except Exception as e:
             raise CommandError(e)
 
