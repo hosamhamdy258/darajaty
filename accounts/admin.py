@@ -22,3 +22,4 @@ class UserAdmin(admin.ModelAdmin):
         "date_joined",
         "last_update",
     )
+    search_fields = ("USERNAME_FIELD",)

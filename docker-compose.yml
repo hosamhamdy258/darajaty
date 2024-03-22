@@ -3,6 +3,7 @@ services:
   django:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
+    # command: gunicorn --bind 0.0.0.0:8000 core.wsgi:application --reload
     ports:
       - "8000:8000"
     volumes:
@@ -10,12 +11,12 @@ services:
     container_name: django
     image: darajaty:v1.0
 
-  react-vite:
-    build: ../darajaty-frontend/
+  react:
+    build: ../darajaty-frontend/project-js/
     command: npm run dev
     ports:
       - "3000:3000"
     volumes:
-      - ../darajaty-frontend/.:/app
+      - ../darajaty-frontend/project-js/.:/app
     container_name: react
     image: react:v1.0

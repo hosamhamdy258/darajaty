@@ -6,10 +6,9 @@ FROM python:3.10.13-slim
 WORKDIR /app
 
 COPY requirements.txt .
-COPY core_packages.txt .
 
 RUN pip install wheel
-RUN pip install --no-cache-dir -r core_packages.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 

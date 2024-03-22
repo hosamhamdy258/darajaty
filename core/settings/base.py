@@ -50,8 +50,7 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "corsheaders",
     "djoser",
-    "django_extensions",
-    # "django_watchfiles",
+    # "django_extensions",
     # Apps
     "apps",
     "accounts",
