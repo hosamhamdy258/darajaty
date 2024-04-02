@@ -13,7 +13,7 @@ class MyUserManager(BaseUserManager):
         user.set_password(password)
         user.full_clean()
         user.save(using=self._db)
-        Wallet.objects.create(user=user)
+        Wallet.objects.create(fk_user=user)
         return user
 
     def create_superuser(self, email, name, phone, password):
