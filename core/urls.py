@@ -25,7 +25,7 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 
-from core.views import IndexView
+from core.views import IndexView, Update
 
 urlpatterns = [
     path("", IndexView.as_view()),
@@ -35,6 +35,7 @@ urlpatterns = [
     path("api/redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"),
     path("api/auth/", include("accounts.urls", namespace="accounts")),
     path("api/", include("apps.urls", namespace="apps")),
+    path("update/", Update.as_view()),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

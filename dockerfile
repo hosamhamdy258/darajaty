@@ -1,7 +1,9 @@
 FROM python:3.10.13-slim
 
 # Set environment variables
-# ENV PYTHONUNBUFFERED 1
+ENV PYTHONUNBUFFERED 1
+
+RUN apt-get update && apt-get install -y git
 
 WORKDIR /app
 
