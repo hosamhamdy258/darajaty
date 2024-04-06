@@ -12,8 +12,9 @@ class IndexView(TemplateView):
     def get(self, request, *args, **kwargs):
         try:
             get_template(self.template_name)
+            get_template("dist/index.html")
         except TemplateDoesNotExist:
-            return render(request, "custom_template.html", status=404)
+            return render(request, "fallback.html", status=404)
 
         return super().get(request, *args, **kwargs)
 

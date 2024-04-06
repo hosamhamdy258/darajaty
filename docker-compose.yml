@@ -15,8 +15,9 @@ services:
     build: ../darajaty-frontend/project-js/
     command: npm run dev
     ports:
-      - "3000:3000"
+      - "5173:5173"
     volumes:
       - ../darajaty-frontend/project-js/.:/app
+      - /app/node_modules/
     container_name: react
     image: react:v1.0
