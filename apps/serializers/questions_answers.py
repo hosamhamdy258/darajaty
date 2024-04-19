@@ -32,11 +32,12 @@ class User_Answers_serializers(FlexFieldsModelSerializer):
         pk_field=HashidSerializerCharField(source_field=HashidField()),
         write_only=True,
     )
+    wallet = serializers.IntegerField(source="fk_user.wallet.current_balance", required=False)
 
     class Meta:
         model = UserAnswers
-        fields = ("fk_choice", "fk_question", "correct", "timeout")
-        read_only_fields = ("correct", "timeout")
+        fields = ("fk_choice", "fk_question", "correct", "timeout", "wallet")
+        read_only_fields = ("correct", "timeout", "wallet")
 
     def create(self, validated_data):
         user = self.context["request"].user

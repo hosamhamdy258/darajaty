@@ -39,10 +39,11 @@ class CustomUserCreateSerializer(CustomFlexFieldsModelSerializer, UserCreateSeri
 
 class CustomUserSerializer(CustomFlexFieldsModelSerializer, UserSerializer):
     id = HashidSerializerCharField(source_field=HashidField(), read_only=True)
+    wallet = serializers.SlugRelatedField(read_only=True, slug_field="current_balance")
 
     class Meta:
         model = User
-        fields = ("id", "name", "is_admin", "email", "phone")
+        fields = ("id", "name", "is_admin", "email", "phone", "wallet")
 
 
 class CustomUserMeSerializer(CustomFlexFieldsModelSerializer, UserSerializer):
