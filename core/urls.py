@@ -36,9 +36,10 @@ urlpatterns = [
     path("api/auth/", include("accounts.urls", namespace="accounts")),
     path("api/", include("apps.urls", namespace="apps")),
     path("update/", Update.as_view()),
-    re_path(r"^.*$", IndexView.as_view()),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS)
+
+urlpatterns += [re_path(r"^.*$", IndexView.as_view())]
