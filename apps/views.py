@@ -29,6 +29,7 @@ class Questions_view(CreateAPIView):
 class Today_Question_view(ListAPIView):
     serializer_class = Questions_serializers
     pagination_class = None
+    queryset = Questions.objects.none()
 
     def get_queryset(self):
         # * question choice logic
