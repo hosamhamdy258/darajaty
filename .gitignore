@@ -160,8 +160,8 @@ cython_debug/
 #.idea/
 
 # Static
-static
-/static
+# static
+# /static
 
 # Migrations
 migrations

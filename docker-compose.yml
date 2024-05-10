@@ -3,13 +3,13 @@ services:
   django:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
-    # command: gunicorn --bind 0.0.0.0:8000 core.wsgi:application --reload
     ports:
       - "8000:8000"
     volumes:
       - .:/app
     container_name: django
     image: darajaty:v1.0
+
 
   react:
     build: ../darajaty-frontend/project-js/
@@ -21,3 +21,31 @@ services:
       - /app/node_modules/
     container_name: react
     image: react:v1.0
+
+
+  django-prod:
+    build: .
+    # command: gunicorn --print-config --bind 0.0.0.0:9000 core.wsgi:application --reload > ./test.py
+    command: gunicorn
+    ports:
+      - "9000:9000"
+    volumes:
+      - .:/app
+    container_name: django-prod
+    image: darajaty:v2.0
+    environment:
+      - DJANGO_DEVELOPMENT=False
+
+
+  nginx:
+      build: ./nginx/
+      container_name: nginx
+      image: nginx:v1.0
+      ports:
+        - "80:80"
+      depends_on:
+        - django-prod
+      volumes:
+        - ./nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf:ro
+        - ./static:/app/static
+        - ./media:/app/media
