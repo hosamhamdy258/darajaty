@@ -19,6 +19,7 @@ services:
     volumes:
       - ./frontend/project-js/.:/app
       - /app/node_modules/
+      - ./templates/dist:/app/templates/dist
     container_name: react
     image: react:v1.0
 
