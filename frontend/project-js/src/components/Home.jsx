@@ -4,7 +4,7 @@ function Home() {
   const cards = [
     "Question Of The Day",
     // "Rewards",
-    // "Add Questions",
+    "Add Questions",
     "Rules",
     // "Review Questions",
     "Coming Soon",

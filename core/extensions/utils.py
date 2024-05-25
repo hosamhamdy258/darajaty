@@ -4,6 +4,7 @@ import string
 import time
 from collections import Counter
 from io import BytesIO
+from typing import Any, Dict, List, Optional
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
@@ -21,24 +22,27 @@ from rest_framework import exceptions, serializers
 from rest_framework.pagination import PageNumberPagination
 
 
-def duplicated_value_checker(iterable, key, value=None):
+def duplicated_value_checker(iterable: List[Dict[str, Any]], keys: Dict[str, Optional[Any]]):
     """
-    check value is duplicated in array of dicts with optional specified value
+    Checks for duplicate values in the given iterable of dicts based on specified keys.
 
-    example : [{"color": "red"},{"color": "red"}]
+    Args:
+        iterable (Iterable[Dict[str, Any]]): An iterable of dictionaries to check for duplicates.
+        keys (Dict[str, Any]): A dictionary where the keys are the fields to check for duplicates,
+                               and the values are specific values to check against (or None to check any value).
 
-    will raise "error": "red is duplicated"
-
-    1- Counter generated from looping on original array of dicts
-        with given dict["key"]=optional[value]
-
-    2- Using .items() on result from Counter to loop (name=key,count=value)
-
-    3- Return list with key counted more than 1
+    Raises:
+        serializers.ValidationError: If duplicate values are found.
     """
-    values = [name for name, count in Counter(element[key] for element in iterable if element[key] == value or value is None).items() if count > 1]
-    if values:
-        raise serializers.ValidationError({"error": f"{values} is duplicated"})
+
+    values_to_check = [(key, dict_item[key]) for dict_item in iterable for key in dict_item if key in keys]
+
+    value_counts = Counter(values_to_check)
+
+    duplicated_keys = [key for (key, value), count in value_counts.items() if count > 1 and (keys[key] is None or value == keys[key])]
+
+    if duplicated_keys:
+        raise serializers.ValidationError({"error": f"{duplicated_keys} is duplicated"})
 
 
 def check_value_exists(iterable, key, error_msg="", raise_error=True):

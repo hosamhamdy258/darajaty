@@ -36,7 +36,7 @@ class Questions_create_serializers(FlexFieldsModelSerializer):
 
     def create(self, validated_data):
         choices = validated_data.pop("choices_set")
-        duplicated_value_checker(iterable=choices, key="correct", value=True)
+        duplicated_value_checker(iterable=choices, keys={"correct": True, "choice": None})
         check_value_exists(
             iterable=choices,
             key="correct",
