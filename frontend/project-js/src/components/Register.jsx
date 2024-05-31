@@ -30,7 +30,7 @@ function Register() {
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: zodResolver(schema) });
-  const { mutate, isLoading, error, isSuccess } = useRegister();
+  const { mutate, isPending, error, isSuccess } = useRegister();
   if (isSuccess) {
     return <Redirect msg="You're Registered Successfully" />;
   }
@@ -116,16 +116,16 @@ function Register() {
             <button
               className={`btn btn-${color} col-4`}
               type="submit"
-              disabled={isLoading}
+              disabled={isPending}
             >
-              {isLoading ? (
+              {isPending ? (
                 <>
                   <span
                     className="spinner-border spinner-border-sm"
                     role="status"
                     aria-hidden="true"
                   ></span>
-                  <span className="mx-2 text-nowrap">Signup ...</span>
+                  <span className="mx-2 text-nowrap">Sign up ...</span>
                 </>
               ) : (
                 "Sign up"

@@ -12,7 +12,7 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 
 function Questions() {
-  const { data, isLoading, error } = useQuestion();
+  const { data, isPending, error } = useQuestion();
   const setProgress = useStore((state) => state.setProgress);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ function Questions() {
     return <Redirect msg={error.response.data.detail} />;
   }
 
-  if (isLoading) return <Loading />;
+  if (isPending) return <Loading />;
   return <QuestionsForm questionData={data} />;
 }
 
@@ -44,7 +44,7 @@ function QuestionsForm({ questionData }) {
     formState: { errors },
   } = useForm({ resolver: zodResolver(schema) });
 
-  const { mutate, isLoading, isSuccess, isError, data } = useAnswer();
+  const { mutate, isPending, isSuccess, isError, data } = useAnswer();
 
   const onSubmit = (data) => {
     mutate({ fk_choice: data.answer, fk_question: id });
@@ -103,9 +103,9 @@ function QuestionsForm({ questionData }) {
             <button
               className={`btn btn-${color} col-4`}
               type="submit"
-              disabled={isLoading}
+              disabled={isPending}
             >
-              {isLoading ? (
+              {isPending ? (
                 <>
                   <span
                     className="spinner-border spinner-border-sm"

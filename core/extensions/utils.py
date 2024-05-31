@@ -39,10 +39,10 @@ def duplicated_value_checker(iterable: List[Dict[str, Any]], keys: Dict[str, Opt
 
     value_counts = Counter(values_to_check)
 
-    duplicated_keys = [key for (key, value), count in value_counts.items() if count > 1 and (keys[key] is None or value == keys[key])]
+    duplicated_keys = [(key, value) for (key, value), count in value_counts.items() if count > 1 and (keys[key] is None or value == keys[key])]
 
     if duplicated_keys:
-        raise serializers.ValidationError({"error": f"{duplicated_keys} is duplicated"})
+        raise serializers.ValidationError({key: [f"{key} is duplicated with value : {value}"] for (key, value) in duplicated_keys})
 
 
 def check_value_exists(iterable, key, error_msg="", raise_error=True):
@@ -53,7 +53,7 @@ def check_value_exists(iterable, key, error_msg="", raise_error=True):
     """
     found = any([element.get(key) for element in iterable])
     if not found and raise_error:
-        raise exceptions.ParseError({"error": (f"{key} not exist in given Iterable" if not error_msg else error_msg)})
+        raise exceptions.ParseError({"error": [f"{key} not exist in given Iterable" if not error_msg else error_msg]})
     return found
 
 

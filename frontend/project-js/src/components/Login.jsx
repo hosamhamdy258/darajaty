@@ -24,7 +24,7 @@ function Login() {
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: zodResolver(schema) });
-  const { mutate, isLoading, data, isSuccess, error } = useLogin();
+  const { mutate, isPending, data, isSuccess, error } = useLogin();
   const { user, update } = useStore();
   const navigate = useNavigate();
 
@@ -94,9 +94,9 @@ function Login() {
             <button
               className={`btn btn-${color} col-4`}
               type="submit"
-              disabled={isLoading}
+              disabled={isPending}
             >
-              {isLoading ? (
+              {isPending ? (
                 <>
                   <span
                     className="spinner-border spinner-border-sm"
