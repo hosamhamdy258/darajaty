@@ -8,11 +8,9 @@ TODO: Add a brief description of the project here.
 
 ### Live Version
 
-Stay tuned! The live version of Darajaty will be available soon.
+The live version of Darajaty Hosted on pythonanywhere.
 
-### Front-end repo
-
-[Link](https://github.com/hosamhamdy258/darajaty-frontend)
+[Live Version](https://darajaty.pythonanywhere.com/)
 
 ### Features
 
@@ -26,6 +24,8 @@ Stay tuned! The live version of Darajaty will be available soon.
 
 ### Installation & Run Locally
 
+Project can run with standard way using virtual environment or using Docker
+
 Clone the project
 
 ```bash
@@ -35,7 +35,7 @@ Clone the project
 Go to the Project directory
 
 ```bash
-  cd my-project
+  cd darajaty
 ```
 
 Create python virtual environment and run this commands
@@ -54,13 +54,19 @@ To start the project run in terminal
   python manage.py runserver
 ```
 
+
+if you're interested on development , make sure you have docker installed then run inside project directory
+
+```bash
+  docker compose up
+```
 ### Credits
 
 While I would like to express my gratitude to everyone helped me through project wouldn't have been possible without them
-[Very Academy](https://www.youtube.com/@veryacademy)
-[Coding with mosh](https://codewithmosh.com/)
-[ITI](https://iti.gov.eg/iti/home)
-and many more Thank you all
+[ITI](https://iti.gov.eg/iti/home),
+[Very Academy](https://www.youtube.com/@veryacademy),
+[Coding with mosh](https://codewithmosh.com/),
+and many amazing people Thank you all
 
 ### Feedback
 
