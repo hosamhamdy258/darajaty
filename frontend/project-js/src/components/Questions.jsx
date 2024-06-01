@@ -22,7 +22,7 @@ function Questions() {
   }, []);
 
   if (error) {
-    return <Redirect msg={error.response.data.detail} />;
+    return <Redirect CenterMessage={error.response.data.detail} />;
   }
 
   if (isPending) return <Loading />;
@@ -51,20 +51,40 @@ function QuestionsForm({ questionData }) {
   };
   const progress = useStore((state) => state.progress);
   const setPoints = useStore((state) => state.setPoints);
+  const buttonUrl = "/question-of-the-day";
+  const buttonMessage = "Another Question";
+
   if (progress == "0%") {
-    return <Redirect msg="You didn't answer in time." />;
+    return (
+      <Redirect
+        CenterMessage="You didn't answer in time."
+        buttonMessage={buttonMessage}
+        buttonUrl={buttonUrl}
+      />
+    );
   }
 
   if (isSuccess) {
     setPoints(data["wallet"]);
+    const CenterMessage = `Your Answer is ${
+      data["correct"] ? "correct" : "wrong"
+    }`;
     return (
       <Redirect
-        msg={`Your Answer is ${data["correct"] ? "correct" : "wrong"}`}
+        CenterMessage={CenterMessage}
+        buttonMessage={buttonMessage}
+        buttonUrl={buttonUrl}
       />
     );
   }
   if (isError) {
-    return <Redirect msg={"Error msg"} />;
+    return (
+      <Redirect
+        CenterMessage={"Error CenterMessage"}
+        buttonMessage={buttonMessage}
+        buttonUrl={buttonUrl}
+      />
+    );
   }
 
   return (

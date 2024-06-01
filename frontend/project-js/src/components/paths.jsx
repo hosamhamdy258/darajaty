@@ -12,7 +12,7 @@ import Login from "./Login";
 import UrlFixer from "../utilities/urls";
 
 export const PrivatePaths = [
-  { path: "Question of the day", element: <Questions /> },
+  { path: "Today Question", element: <Questions /> },
   { path: "Add Questions", element: <AddQuestions /> },
   { path: "Review Questions", element: <ReviewQuestions /> },
   { path: "Transactions", element: <Transactions /> },

@@ -1,8 +1,21 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import color from "../service/ThemeColor";
+import { useEffect } from "react";
+
+
 function Home() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const url = location.state?.url;
+
+  useEffect(() => {
+    if (url) {
+      navigate(url);
+    }
+  })
+
   const cards = [
-    "Question Of The Day",
+    "Today Question",
     // "Rewards",
     "Add Questions",
     "Rules",

@@ -32,7 +32,7 @@ function Register() {
   } = useForm({ resolver: zodResolver(schema) });
   const { mutate, isPending, error, isSuccess } = useRegister();
   if (isSuccess) {
-    return <Redirect msg="You're Registered Successfully" />;
+    return <Redirect CenterMessage="You're Registered Successfully" />;
   }
 
   const onSubmit = (data) =>

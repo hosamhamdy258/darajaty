@@ -46,7 +46,7 @@ function AddQuestions() {
   if (isSuccess) {
     return (
       <Redirect
-        msg={`Question Added Successfully`}
+        CenterMessage={`Question Added Successfully`} buttonMessage={"Add New Question"} buttonUrl="/add-questions"
       />
     );
   }
