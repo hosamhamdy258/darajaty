@@ -51,7 +51,7 @@ function QuestionsForm({ questionData }) {
   };
   const progress = useStore((state) => state.progress);
   const setPoints = useStore((state) => state.setPoints);
-  const buttonUrl = "/question-of-the-day";
+  const buttonUrl = "/today-question";
   const buttonMessage = "Another Question";
 
   if (progress == "0%") {
